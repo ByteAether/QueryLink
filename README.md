@@ -1,4 +1,9 @@
 # QueryLink
+*from **ByteAether***
+
+[![Build Status](https://github.com/ByteAether/QueryLink/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/ByteAether/QueryLink/actions/workflows/build-and-test.yml)
+[![NuGet](https://img.shields.io/nuget/v/ByteAether.QueryLink)](https://www.nuget.org/packages/ByteAether.QueryLink/)
+
 
 QueryLink is a NuGet package designed to simplify the integration of UI components such as datagrids and datatables with backend `IQueryable`-based data sources. This library provides a seamless way to link these two parts of a system with minimal code, making it easier to manage filters and sorting operations.
 
@@ -15,7 +20,7 @@ QueryLink is a NuGet package designed to simplify the integration of UI componen
 You can install the package via NuGet:
 
 ```sh
-dotnet add package QueryLink
+dotnet add package ByteAether.QueryLink
 ```
 
 ## Usage
@@ -120,6 +125,136 @@ var overrides = new Overrides<Person>
 
 IQueryable<Person> query = dbContext.People.AsQueryable();
 query = query.Apply(definitions, overrides);
+```
+
+### Comprehensive Example: Using MudBlazor DataGrid and EF Core
+
+This example demonstrates how to integrate QueryLink with MudBlazor DataGrid and EF Core. The `LoadServerData` method reads the state of the MudBlazor DataGrid, creates a QueryLink definition set out of it, and sends the definitions over an HTTP API using `ToQueryString` and `FromQueryString`. The `PersonService` class contains the overrides and applies the definitions to the `IQueryable` source. The `PeopleController` handles the API requests, reads the full query string from the request, and returns the filtered and sorted data. The produced query string is directly included in the URL, and the definitions are parsed from the full query string.
+
+```csharp
+// Define your EF Core DbContext and entity
+public class ApplicationDbContext : DbContext
+{
+    public DbSet<Person> People { get; set; }
+}
+
+public class Person
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public string FullName => $"{Name} Doe";
+}
+
+// In your service or controller
+public class PersonService
+{
+    private readonly ApplicationDbContext _context;
+
+    public PersonService(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public IQueryable<Person> GetPeople(Definitions definitions)
+    {
+        var overrides = new Overrides<Person>
+        {
+            Filter = [
+                new(p => p.Name, p => p.FullName)
+            ],
+            Order = [
+                new(p => p.Name, p => p.FullName)
+            ]
+        };
+
+        var query = _context.People.AsQueryable();
+        return query.Apply(definitions, overrides);
+    }
+}
+
+// In your API controller
+[ApiController]
+[Route("api/[controller]")]
+public class PeopleController : ControllerBase
+{
+    private readonly PersonService _personService;
+
+    public PeopleController(PersonService personService)
+    {
+        _personService = personService;
+    }
+
+    [HttpGet]
+    public IActionResult GetPeople()
+    {
+        var queryString = Request.QueryString.ToString();
+        var definitions = Definitions.FromQueryString(queryString);
+        var people = _personService.GetPeople(definitions);
+        return Ok(people);
+    }
+}
+
+// In your Blazor component
+@page "/people"
+@inject HttpClient Http
+
+<MudDataGrid
+    T="Person"
+    Items="people"
+    Hover="true"
+    Sortable="true"
+    Filterable="true"
+    Striped="true"
+    Pagination="true"
+    ServerData="LoadServerData"
+>
+    <ToolBarContent>
+        <MudText typo="Typo.h6">People</MudText>
+    </ToolBarContent>
+    <Columns>
+        <Column T="Person" Field="@nameof(Person.Name)" Title="Name" Sortable="true" Filterable="true" />
+        <Column T="Person" Field="@nameof(Person.Age)" Title="Age" Sortable="true" Filterable="true" />
+    </Columns>
+</MudDataGrid>
+
+@code {
+    private IEnumerable<Person> people = new List<Person>();
+
+    private async Task<GridData<Person>> LoadServerData(GridState<Person> state)
+    {
+        var definitions = new Definitions
+        {
+            Filters = state.Filters.Select(f => new FilterDefinition<object?>(f.Field, GetFilterOperator(f.Operator), f.Value)).ToList(),
+            Orders = state.Sorts.Select(s => new OrderDefinition(s.Field, s.Direction == SortDirection.Descending)).ToList()
+        };
+
+        var queryString = definitions.ToQueryString();
+        var response = await Http.GetFromJsonAsync<List<Person>>($"api/people?{queryString}");
+
+        var totalItems = response.Count();
+        var items = response.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList();
+
+        return new GridData<Person> { Items = items, TotalItems = totalItems };
+    }
+
+    private FilterOperator GetFilterOperator(FilterOperator mudOperator)
+    {
+        return mudOperator switch
+        {
+            FilterOperator.Contains => FilterOperator.Has,
+            FilterOperator.Equals => FilterOperator.Eq,
+            FilterOperator.GreaterThan => FilterOperator.Gt,
+            FilterOperator.GreaterThanOrEqual => FilterOperator.Gte,
+            FilterOperator.LessThan => FilterOperator.Lt,
+            FilterOperator.LessThanOrEqual => FilterOperator.Lte,
+            FilterOperator.NotEqual => FilterOperator.Neq,
+            FilterOperator.StartsWith => FilterOperator.Sw,
+            FilterOperator.EndsWith => FilterOperator.Ew,
+            _ => throw new ArgumentOutOfRangeException(nameof(mudOperator), mudOperator, null)
+        };
+    }
+}
 ```
 
 ## Filter Operators
