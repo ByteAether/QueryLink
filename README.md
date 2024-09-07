@@ -1,8 +1,8 @@
 # QueryLink
 *from **ByteAether***
 
-[![Build Status](https://github.com/ByteAether/QueryLink/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/ByteAether/QueryLink/actions/workflows/build-and-test.yml)
-[![NuGet](https://img.shields.io/nuget/v/ByteAether.QueryLink)](https://www.nuget.org/packages/ByteAether.QueryLink/)
+[![NuGet Version](https://img.shields.io/nuget/v/ByteAether.QueryLink)](https://www.nuget.org/packages/ByteAether.QueryLink/)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ByteAether/QueryLink/build-and-test.yml)](https://github.com/ByteAether/QueryLink/actions/workflows/build-and-test.yml)
 
 
 QueryLink is a NuGet package designed to simplify the integration of UI components such as datagrids and datatables with backend `IQueryable`-based data sources. This library provides a seamless way to link these two parts of a system with minimal code, making it easier to manage filters and sorting operations.
