@@ -22,14 +22,14 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore src/ByteAether.QueryLink.sln
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore src/ByteAether.QueryLink.sln
 
     - name: Run tests
       continue-on-error: true
-      run: dotnet test --no-build --verbosity normal --logger "trx"
+      run: dotnet test --no-build --verbosity normal --logger "trx" src/ByteAether.QueryLink.sln
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
