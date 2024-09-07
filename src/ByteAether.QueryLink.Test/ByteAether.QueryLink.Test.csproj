@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QueryLink\QueryLink.csproj" />
+    <ProjectReference Include="..\ByteAether.QueryLink\ByteAether.QueryLink.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace QueryLink;
+namespace ByteAether.QueryLink;
 
 /// <summary>
 /// A collection of filter and order definitions.

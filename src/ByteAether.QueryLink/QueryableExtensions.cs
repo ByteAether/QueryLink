@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using static QueryLink.Definitions;
+using static ByteAether.QueryLink.Definitions;
 
-namespace QueryLink;
+namespace ByteAether.QueryLink;
 
 /// <summary>
 /// Provides extension methods for applying filter and order definitions to an IQueryable.

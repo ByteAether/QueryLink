@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net6.0;netstandard2.1</TargetFrameworks>
 	<LangVersion>12.0</LangVersion>
 	<OutputType>Library</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -25,28 +25,12 @@
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
-    <WarningLevel>9999</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
-    <WarningLevel>9999</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
-    <WarningLevel>9999</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
-    <WarningLevel>9999</WarningLevel>
-  </PropertyGroup>
-
   <ItemGroup>
-    <None Include="..\LICENSE">
+    <None Include="..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\README.md">
+    <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

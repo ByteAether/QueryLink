@@ -1,4 +1,4 @@
-namespace QueryLink.Test;
+namespace ByteAether.QueryLink.Test;
 
 public class StringValueParserTests
 {

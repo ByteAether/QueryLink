@@ -1,7 +1,7 @@
 ﻿using System.Web;
-using static QueryLink.Definitions;
+using static ByteAether.QueryLink.Definitions;
 
-namespace QueryLink.Test;
+namespace ByteAether.QueryLink.Test;
 public class HttpExtensionsTests
 {
 	[Fact]

@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace QueryLink;
+namespace ByteAether.QueryLink;
 internal static partial class StringValueParser
 {
 	private static readonly List<Func<string, object?>> _parsers = [

@@ -4,28 +4,36 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using static QueryLink.Definitions;
+using static ByteAether.QueryLink.Definitions;
 
-namespace QueryLink;
+namespace ByteAether.QueryLink;
 
 /// <summary>
 /// Provides extension methods for converting Definitions to and from query strings.
 /// </summary>
 public static class QueryStringExtensions
 {
-	private static readonly Regex _filterSplitter;
+	private static readonly (FilterOperator Operator, string StringValue)[] _filterOperatorPairs
+		= ((FilterOperator[])Enum.GetValues(typeof(FilterOperator)))
+		.Select(x => (
+			Operator: x,
+			StringValue: typeof(FilterOperator)
+				.GetField(x.ToString())?
+				.GetCustomAttribute<DescriptionAttribute>()?
+				.Description ?? x.ToString()
+		))
+		.ToArray();
 
-	static QueryStringExtensions()
-	{
-		var operatorStrings = Enum.GetValues<FilterOperator>()
-			.Select(OperatorToString)
-			.OrderByDescending(x => x.Length)
-			.Select(Regex.Escape);
-		_filterSplitter = new Regex(
-			$"({string.Join('|', operatorStrings)})",
-			RegexOptions.Compiled
-		);
-	}
+	private static readonly Regex _filterSplitter = new(
+		$"({string.Join(
+			'|',
+			_filterOperatorPairs
+				.Select(x => x.StringValue)
+				.OrderByDescending(x => x.Length)
+				.Select(Regex.Escape)
+		)})",
+		RegexOptions.Compiled
+	);
 
 	/// <summary>
 	/// Converts the definitions to a query string.
@@ -123,12 +131,8 @@ public static class QueryStringExtensions
 	}
 
 	private static string OperatorToString(FilterOperator op)
-		=> typeof(FilterOperator)
-			.GetField(op.ToString())?
-			.GetCustomAttribute<DescriptionAttribute>()?
-			.Description ?? op.ToString();
+		=> _filterOperatorPairs.Single(x => x.Operator == op).StringValue;
 
 	private static FilterOperator OperatorFromString(string operatorString)
-		=> Enum.GetValues<FilterOperator>()
-			.FirstOrDefault(x => OperatorToString(x) == operatorString);
+		=> _filterOperatorPairs.Single(x => x.StringValue == operatorString).Operator;
 }

@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace QueryLink;
+namespace ByteAether.QueryLink;
 
 /// <summary>
 /// Overrides for filter and order definitions.
