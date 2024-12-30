@@ -6,6 +6,7 @@
 	<OutputType>Library</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<Deterministic>True</Deterministic>
 	
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<IncludeSymbols>True</IncludeSymbols>
