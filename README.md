@@ -1,13 +1,19 @@
-# QueryLink
-*from **ByteAether***
+# ![QueryLink from ByteAether](assets/header.png)
 
-[![NuGet Version](https://img.shields.io/nuget/v/ByteAether.QueryLink)](https://www.nuget.org/packages/ByteAether.QueryLink/)
-[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ByteAether/QueryLink/build-and-test.yml)](https://github.com/ByteAether/QueryLink/actions/workflows/build-and-test.yml)
+[![License](https://img.shields.io/github/license/ByteAether/QueryLink?logo=github&label=License)](https://github.com/ByteAether/QueryLink/blob/main/LICENSE)
+[![NuGet Version](https://img.shields.io/nuget/v/ByteAether.QueryLink?logo=nuget&label=Version)](https://www.nuget.org/packages/ByteAether.QueryLink/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/ByteAether.QueryLink?logo=nuget&label=Downloads)](https://www.nuget.org/packages/ByteAether.QueryLink/)
+[![GitHub Build Status](https://img.shields.io/github/actions/workflow/status/ByteAether/QueryLink/build-and-test.yml?logo=github&label=Build%20%26%20Test)](https://github.com/ByteAether/QueryLink/actions/workflows/build-and-test.yml)
 
+<img align="right" width="100px" src="assets/logo.png" />
 
 QueryLink is a NuGet package designed to simplify the integration of UI components such as datagrids and datatables with backend `IQueryable`-based data sources. This library provides a seamless way to link these two parts of a system with minimal code, making it easier to manage filters and sorting operations.
 
 ## Features
+
+![.NET 8.0](https://img.shields.io/badge/.NET-8.0-brightgreen)
+![.NET 6.0](https://img.shields.io/badge/.NET-6.0-brightgreen)
+![.NET Standard 2.1](https://img.shields.io/badge/.NET-Standard_2.1-yellow)
 
 - **Filter Definitions:** Define filters with various operators to refine your data queries.
 - **Order Definitions:** Specify sorting criteria to order your data.
@@ -17,11 +23,13 @@ QueryLink is a NuGet package designed to simplify the integration of UI componen
 
 ## Installation
 
-You can install the package via NuGet:
+Install the latest stable package via NuGet:
 
 ```sh
 dotnet add package ByteAether.QueryLink
 ```
+
+Use the `--version` option to specify a [preview version](https://www.nuget.org/packages/ByteAether.QueryLink/absoluteLatest) to install.
 
 ## Usage
 
