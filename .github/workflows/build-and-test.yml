@@ -19,17 +19,19 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: |
+            8.x
+            6.x
 
     - name: Restore dependencies
       run: dotnet restore src/ByteAether.QueryLink.sln
 
     - name: Build
-      run: dotnet build --no-restore src/ByteAether.QueryLink.sln
+      run: dotnet build --no-restore --configuration Release src/ByteAether.QueryLink.sln
 
     - name: Run tests
       continue-on-error: true
-      run: dotnet test --no-build --verbosity normal --logger "trx" src/ByteAether.QueryLink.sln
+      run: dotnet test --no-build --verbosity normal --logger "trx" --configuration Release src/ByteAether.QueryLink.sln
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
