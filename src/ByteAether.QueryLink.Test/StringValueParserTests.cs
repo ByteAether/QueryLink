@@ -72,7 +72,7 @@ public class StringValueParserTests
 	{
 		var result = StringValueParser.Parse("[]");
 		Assert.IsType<object[]>(result);
-		Assert.Equal(new object[] { }, result);
+		Assert.Equal(Array.Empty<object>(), result);
 	}
 
 	[Fact]

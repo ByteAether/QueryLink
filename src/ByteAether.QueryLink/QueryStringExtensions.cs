@@ -13,22 +13,24 @@ namespace ByteAether.QueryLink;
 /// </summary>
 public static class QueryStringExtensions
 {
-	private static readonly (FilterOperator Operator, string StringValue)[] _filterOperatorPairs
+	private static readonly Dictionary<FilterOperator, string> _operatorToStringMap
 		= ((FilterOperator[])Enum.GetValues(typeof(FilterOperator)))
-		.Select(x => (
-			Operator: x,
-			StringValue: typeof(FilterOperator)
-				.GetField(x.ToString())?
-				.GetCustomAttribute<DescriptionAttribute>()?
-				.Description ?? x.ToString()
-		))
-		.ToArray();
+			.ToDictionary(
+				x => x,
+				x => typeof(FilterOperator)
+					.GetField(x.ToString())?
+					.GetCustomAttribute<DescriptionAttribute>()?
+					.Description ?? x.ToString()
+			);
+
+	private static readonly Dictionary<string, FilterOperator> _operatorFromStringMap
+		= _operatorToStringMap.ToDictionary(x => x.Value, x => x.Key);
 
 	private static readonly Regex _filterSplitter = new(
 		$"({string.Join(
 			'|',
-			_filterOperatorPairs
-				.Select(x => x.StringValue)
+			_operatorToStringMap
+				.Values
 				.OrderByDescending(x => x.Length)
 				.Select(Regex.Escape)
 		)})",
@@ -49,8 +51,8 @@ public static class QueryStringExtensions
 	) => new StringBuilder()
 		.Append(
 			string.Join('&', definitions.Filters
-			.Select(ToQueryString)
-			.Select(x => $"{filterKey}[]={x}")
+				.Select(ToQueryString)
+				.Select(x => $"{filterKey}[]={x}")
 			)
 		)
 		.Append(definitions.Orders.Any() ? $"&{orderKey}=" : string.Empty)
@@ -86,12 +88,12 @@ public static class QueryStringExtensions
 			if (queryParam.Key == $"{filterKey}[]")
 			{
 				var valParts = _filterSplitter.Split(queryParam.Value, 2);
-				var op = OperatorFromString(valParts[1]);
+				var op = _operatorFromStringMap[valParts[1]];
 				var filterValue = StringValueParser.Parse(valParts[2]);
 
 				filters.Add(new FilterDefinition<object?>(
 					valParts[0],
-					OperatorFromString(valParts[1]),
+					_operatorFromStringMap[valParts[1]],
 					filterValue
 				));
 			}
@@ -127,12 +129,6 @@ public static class QueryStringExtensions
 				? "[" + string.Join(',', (def.Value as IEnumerable)!.OfType<object>().Select(x => x.ToString()?.Replace(",", "\\,"))) + "]"
 				: def.Value?.ToString();
 
-		return HttpUtility.UrlEncode($"{def.Name}{OperatorToString(def.Operation)}{valueSet}");
+		return HttpUtility.UrlEncode($"{def.Name}{_operatorToStringMap[def.Operation]}{valueSet}");
 	}
-
-	private static string OperatorToString(FilterOperator op)
-		=> _filterOperatorPairs.Single(x => x.Operator == op).StringValue;
-
-	private static FilterOperator OperatorFromString(string operatorString)
-		=> _filterOperatorPairs.Single(x => x.StringValue == operatorString).Operator;
 }

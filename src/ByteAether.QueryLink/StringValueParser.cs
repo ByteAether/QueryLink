@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 
 namespace ByteAether.QueryLink;
+
 internal static partial class StringValueParser
 {
 	private static readonly List<Func<string, object?>> _parsers = [

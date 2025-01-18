@@ -133,7 +133,7 @@ public static class QueryableExtensions
 			if (or != null)
 			{
 				expBody = GetTrueExpression(or.ValueReplace.Body);
-				expParams = or.ValueReplace.Parameters.ToArray();
+				expParams = [.. or.ValueReplace.Parameters];
 			}
 
 			var conditionExpression = GetFilterExpression(expBody, Expression.Constant(def.Value), def.Operation);
@@ -179,7 +179,7 @@ public static class QueryableExtensions
 			if (or != null)
 			{
 				expBody = GetTrueExpression(or.ValueReplace.Body);
-				expParams = or.ValueReplace.Parameters.ToArray();
+				expParams = [.. or.ValueReplace.Parameters];
 			}
 
 			var selector = Expression.Lambda(expBody, expParams);
