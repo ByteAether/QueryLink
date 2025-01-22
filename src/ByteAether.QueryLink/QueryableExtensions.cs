@@ -116,21 +116,21 @@ public static class QueryableExtensions
 		IEnumerable<Overrides<T>.Override<object, object>> overrides
 	)
 	{
+		Expression expBody;
+		ParameterExpression[] expParams;
+
 		var param = Expression.Parameter(typeof(T), "x");
+		var overridesByFieldName = overrides.ToDictionary(x => GetFieldName(x.Selector.Body), x => x);
 
 		foreach (var def in filterDefs)
 		{
 			var prop = typeof(T).GetProperty(def.Name)
 				?? throw new ArgumentException($"Property {def.Name} does not exist in queryable object of {typeof(T).Name}!");
 
-			Expression expBody = Expression.MakeMemberAccess(param, prop);
-			ParameterExpression[] expParams = [param];
+			expBody = Expression.MakeMemberAccess(param, prop);
+			expParams = [param];
 
-			var or = overrides.FirstOrDefault(
-				x => GetFieldName(x.Selector.Body) == def.Name
-			);
-
-			if (or != null)
+			if (overridesByFieldName.TryGetValue(def.Name, out var or))
 			{
 				expBody = GetTrueExpression(or.ValueReplace.Body);
 				expParams = [.. or.ValueReplace.Parameters];
@@ -162,21 +162,21 @@ public static class QueryableExtensions
 		IEnumerable<Overrides<T>.Override<object, object>> overrides
 	)
 	{
+		Expression expBody;
+		ParameterExpression[] expParams;
+
 		var param = Expression.Parameter(typeof(T), "x");
+		var overridesByFieldName = overrides.ToDictionary(x => GetFieldName(x.Selector.Body), x => x);
 
 		foreach (var def in orderDefs)
 		{
 			var prop = typeof(T).GetProperty(def.Name)
 				?? throw new ArgumentException($"Property {def.Name} does not exist in queryable object of {typeof(T).Name}!");
 
-			Expression expBody = Expression.Property(param, prop);
-			ParameterExpression[] expParams = [param];
+			expBody = Expression.Property(param, prop);
+			expParams = [param];
 
-			var or = overrides.FirstOrDefault(
-				x => GetFieldName(x.Selector.Body) == def.Name
-			);
-
-			if (or != null)
+			if (overridesByFieldName.TryGetValue(def.Name, out var or))
 			{
 				expBody = GetTrueExpression(or.ValueReplace.Body);
 				expParams = [.. or.ValueReplace.Parameters];

@@ -13,7 +13,7 @@ namespace ByteAether.QueryLink;
 /// </summary>
 public static class QueryStringExtensions
 {
-	private static readonly Dictionary<FilterOperator, string> _operatorToStringMap
+	private static readonly IReadOnlyDictionary<FilterOperator, string> _operatorToStringMap
 		= ((FilterOperator[])Enum.GetValues(typeof(FilterOperator)))
 			.ToDictionary(
 				x => x,
@@ -23,7 +23,7 @@ public static class QueryStringExtensions
 					.Description ?? x.ToString()
 			);
 
-	private static readonly Dictionary<string, FilterOperator> _operatorFromStringMap
+	private static readonly IReadOnlyDictionary<string, FilterOperator> _operatorFromStringMap
 		= _operatorToStringMap.ToDictionary(x => x.Value, x => x.Key);
 
 	private static readonly Regex _filterSplitter = new(
