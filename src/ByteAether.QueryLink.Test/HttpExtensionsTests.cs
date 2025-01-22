@@ -318,4 +318,21 @@ public class HttpExtensionsTests
 		}
 	}
 
+	[Fact]
+	public void ToQueryString_NestedProperties_EncodesCorrectly()
+	{
+		var definitions = new Definitions
+		{
+			Filters = [new("Address.Street", FilterOperator.Eq, "Main St")],
+			Orders = [new("Address.City.Name", true)]
+		};
+
+		var query = definitions.ToQueryString();
+
+		Assert.Contains("filter[]=Address%2EStreet%3dMain+St", query);
+		Assert.Contains("order=-Address%2ECity%2EName", query);
+
+		var parsedDefinitions = QueryStringExtensions.FromQueryString(query);
+		AssertDefinitionsEqual(definitions, parsedDefinitions);
+	}
 }

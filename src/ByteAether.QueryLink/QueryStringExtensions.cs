@@ -57,8 +57,9 @@ public static class QueryStringExtensions
 		)
 		.Append(definitions.Orders.Any() ? $"&{orderKey}=" : string.Empty)
 		.Append(
-			string.Join(',', definitions.Orders
-				.Select(ToQueryString)
+			string.Join(
+				',',
+				definitions.Orders.Select(ToQueryString)
 			)
 		)
 		.ToString();
@@ -90,12 +91,9 @@ public static class QueryStringExtensions
 				var valParts = _filterSplitter.Split(queryParam.Value, 2);
 				var op = _operatorFromStringMap[valParts[1]];
 				var filterValue = StringValueParser.Parse(valParts[2]);
+				var decodedName = HttpUtility.UrlDecode(valParts[0]).Replace("%2E", ".");
 
-				filters.Add(new FilterDefinition<object?>(
-					valParts[0],
-					_operatorFromStringMap[valParts[1]],
-					filterValue
-				));
+				filters.Add(new FilterDefinition<object?>(decodedName, op, filterValue));
 			}
 			else if (queryParam.Key == orderKey)
 			{
@@ -104,7 +102,7 @@ public static class QueryStringExtensions
 					.Select(part =>
 					{
 						var isReversed = part[0] == '-';
-						var fieldName = part.TrimStart('-', '+');
+						var fieldName = HttpUtility.UrlDecode(part.TrimStart('-', '+')).Replace("%2E", ".");
 						return new OrderDefinition(fieldName, isReversed);
 					})
 				);
@@ -119,7 +117,7 @@ public static class QueryStringExtensions
 	}
 
 	private static string ToQueryString(OrderDefinition def)
-		=> HttpUtility.UrlEncode((def.IsReversed ? "-" : string.Empty) + def.Name);
+		=> HttpUtility.UrlEncode((def.IsReversed ? "-" : string.Empty) + def.Name).Replace(".", "%2E");
 
 	private static string ToQueryString<T>(FilterDefinition<T> def)
 	{
@@ -129,6 +127,6 @@ public static class QueryStringExtensions
 				? "[" + string.Join(',', (def.Value as IEnumerable)!.OfType<object>().Select(x => x.ToString()?.Replace(",", "\\,"))) + "]"
 				: def.Value?.ToString();
 
-		return HttpUtility.UrlEncode($"{def.Name}{_operatorToStringMap[def.Operation]}{valueSet}");
+		return HttpUtility.UrlEncode($"{def.Name}{_operatorToStringMap[def.Operation]}{valueSet}").Replace(".", "%2E");
 	}
 }
