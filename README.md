@@ -296,11 +296,16 @@ The full functionality of LINQ is still available. You are free to write any `.W
 
 ### I need projections; the raw data models are not enough for me.
 
-You can use any library that can map objects from one to another. Our library does not limit you in any way and will work with the dataset you provide in the form of `IQueryable<T>`, whatever the `T` may be.
+You can use any library that can map objects from one to another or use your own mapper code. Our library does not limit you in any way and will work with the dataset you provide in the form of `IQueryable<T>`, whatever the `T` may be.
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request if you have any suggestions or improvements.
+We welcome all contributions! You can:
+
+ * **Open a Pull Request:** Fork the repository, create a branch, make your changes, and submit a pull request to the `main` branch.
+ * **Report Issues:** Found a bug or have a suggestion? [Open an issue](https://github.com/ByteAether/Ulid/issues) with details.
+
+Thank you for helping improve the project!
 
 ## License
 
